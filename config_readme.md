@@ -1,6 +1,7 @@
 # Config File Description
-The config.json file is used to set the Enviro Monitor’s configuration.
-The suggested default configuaration values for a Traffic Monitor (TM) deployment are indicated. You may need to change these based on your deployment.
+The [config.json](config.json) file is used to set the Enviro Monitor’s configuration.
+
+Traffic Monitor (TM) suggested default configuaration values for a deployment are indicated in the "TM config" column. You may need to change these based on your deployment.
 
 | Key | TM config | Description |
 | ------------- | ------------- | ------------- |
@@ -43,5 +44,4 @@ The suggested default configuaration values for a Traffic Monitor (TM) deploymen
 | "indoor_mqtt_topic" | - | Sets the mqtt topic for the indoor monitor within the household. Suggest using "Indoor EM" if mqtt messaging is required and "" if no mqtt messaging is required
 | "city_name" | - | Sets the city name for the monitor’s installation location that will be retrieved from the Astral module’s database
 | "time_zone" | - | Set the time zone for the monitor’s installation location
-
-| "custom_locations" | - | Adds cities that are required by "city_name" and are missing from the Astral module’s database. Format is a list of strings with each string structured as | - |  "city_name, country, country_time_zone, latitude, longitude"
+| "custom_locations" | - | Adds cities that are required by "city_name" and are missing from the Astral module’s database. Format is a list of strings with each string structured as "city_name, country, country_time_zone, latitude, longitude" |
