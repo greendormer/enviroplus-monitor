@@ -1,31 +1,26 @@
-# sudo systemctl restart aqimonitor
+# sudo systemctl restart airquality_server
 
-# https://projects-raspberry.com/indoor-air-quality-monitor/#Script_auto-run
+echo "==> Setting up air quality systemd service…"
 
+sudo cp -rp ~/code/enviroplus-monitor/* /var/lib/airquality/ 
 
-#     Script auto-run
-#     In order to make the python script auto-load when the RaspberryPi restart, we can create a simple service to run the python script:
+echo \
+  "# /etc/systemd/system/airquality_server.service
+# to run: sudo systemctl stop/start/restart/enable/disable airquality_server
 
-#     1) Create a “airquality.service” file with the following content:
+[Unit]
+Description=airQualityDaemon
+After=network.target rc-local.service
 
-#     [Unit]
-#     Description=airQualityDaemon
-#     After=network.target
-#     [Service]
-#     ExecStart=/usr/bin/python3 -u serialtoinflux.py
-#     WorkingDirectory=/home/pi/air-quality
-#     StandardOutput=inherit
-#     StandardError=inherit
-#     Restart=always
-#     User=pi
-#     [Install]
-#     WantedBy=multi-user.target
-#     2) Copy this file into /etc/systemd/system as root:
+[Service]
+Restart=always
+WorkingDirectory=/var/lib/airquality/
+ExecStart=/usr/bin/python3 -u enviro.py
 
-#     sudo cp airquality.service /etc/systemd/system/airquality.service
-#     Once this has been copied, you can attempt to start the service using:
+[Install]
+WantedBy=multi-user.target" | \
+  sudo tee /etc/systemd/system/airquality_server.service > /dev/null
+sudo chmod 644 /etc/systemd/system/airquality_server.service
 
-#     sudo systemctl start airquality.service
-#     3) When you are happy that this starts the app, you can have it start automatically on reboot by using this command:
-
-#     sudo systemctl enable airquality.service
+sudo systemctl start airquality_server
+sudo systemctl enable airquality_server

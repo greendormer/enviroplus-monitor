@@ -4,6 +4,15 @@
 Based on the amazing work at [roscoe81/enviro-monitor](https://github.com/roscoe81/enviro-monitor) (cloned from 
 [73a8e02](https://github.com/roscoe81/enviro-monitor/commit/73a8e02923434d8c7555ff91899c8f04f73aaf47), version `8.2 Gen`) and the manufactuer's repo at [pimoroni/enviroplus-python](https://github.com/pimoroni/enviroplus-python).
 
+# Installation
+1. Run `cd ~/code` 
+1. Run `git clone https://github.com/greendormer/enviroplus-monitor.git` into your home folder (or any folder)
+1. Run `cd enviroplus-monitor` 
+1. Run `sudo chmod +x setup.sh` to enable script
+1. Run `./setup.sh` to install service
+
+You will need Traffic Monitor v0.3.0 or greater to feed data into your TM.
+
 # Config settings for TM
 Relevant settings for Python script to interact with the Traffic Monitor Node-RED instance.
 
