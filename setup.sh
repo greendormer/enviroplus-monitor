@@ -2,6 +2,14 @@
 
 echo "==> Setting up air quality systemd service…"
 
+# install depednecies from pimoroni/enviroplus-python
+#  this will create a python virtual environment at ~/.virtualenvs/pimoroni/
+mkdir -p ~/code
+git clone https://github.com/pimoroni/enviroplus-python ~/code
+cd ~/code/enviroplus-python
+./install.sh
+
+sudo mkdir -p /var/lib/airquality/
 sudo cp -rp ~/code/enviroplus-monitor/* /var/lib/airquality/ 
 
 echo \
@@ -15,7 +23,7 @@ After=network.target rc-local.service
 [Service]
 Restart=always
 WorkingDirectory=/var/lib/airquality/
-ExecStart=/usr/bin/python3 -u enviro.py
+ExecStart=sudo ~/.virtualenvs/pimoroni/bin/python enviro.py
 
 [Install]
 WantedBy=multi-user.target" | \
