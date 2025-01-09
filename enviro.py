@@ -2132,7 +2132,7 @@ except IOError:
 # Check for a persistence data log and use it if it exists and was < 10 minutes ago
 persistent_data_log = {}
 try:
-    with open('<Your Persistent Data Log File Name Here>', 'r') as f:
+    with open('airquality.log', 'r') as f:
         persistent_data_log = json.loads(f.read())
 except IOError:
     print('No Persistent Data Log Available. Using Defaults')
@@ -2301,7 +2301,7 @@ try:
                 # Write to the watchdog file unless there is a comms failure for >= comms_failure_tolerance
                 # when both Luftdaten and Adafruit IO arenabled
                 if comms_failure == False:
-                    with open('<Your Watchdog File Name Here>', 'w') as f:
+                    with open('airquality_watchdog.log', 'w') as f:
                         f.write('Enviro Script Alive')
                 if enable_luftdaten: # Send data to Luftdaten if enabled
                     luft_resp = send_to_luftdaten(luft_values, id, enable_particle_sensor, enable_noise, luft_noise_values, disable_luftdaten_sensor_upload)
@@ -2539,7 +2539,7 @@ try:
                     persistent_data_log["Own Noise Max Date Time"] = own_noise_max_datetime
                     persistent_data_log["Outdoor Noise Max Date Time"] = outdoor_noise_max_datetime
                     print('Logging Barometer, Forecast, Gas Calibration and Display Data')
-                    with open('<Your Persistent Data Log File Name Here>', 'w') as f:
+                    with open('airquality.log', 'w') as f:
                         f.write(json.dumps(persistent_data_log))
                     if "Forecast" in mqtt_values:
                         mqtt_values.pop("Forecast") # Remove Forecast after sending it to home manager so that
