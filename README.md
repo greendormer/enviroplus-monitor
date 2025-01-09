@@ -6,7 +6,7 @@ Based on the amazing work at [roscoe81/enviro-monitor](https://github.com/roscoe
 
 # Installation
 1. Run `cd ~/code` 
-1. Run `git clone https://github.com/greendormer/enviroplus-monitor.git` into your home folder (or any folder)
+1. Run `git clone https://github.com/greendormer/enviroplus-monitor.git`
 1. Run `cd enviroplus-monitor` 
 1. Run `sudo chmod +x setup.sh` to enable script
 1. Run `./setup.sh` to install service

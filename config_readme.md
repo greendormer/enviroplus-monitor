@@ -45,3 +45,4 @@ Traffic Monitor (TM) suggested default configuaration values for a deployment ar
 | "city_name" | `"Portland"` | Sets the city name for the monitor’s installation location that will be retrieved from the Astral module’s database
 | "time_zone" | `"America/Los/Angeles"` | Set the time zone for the monitor’s installation location
 | "custom_locations" | `["Portland, United States of America, America/Los_Angeles, 45.52, -122.681944"]` | Adds cities that are required by "city_name" and are missing from the Astral module’s database. Format is a list of strings with each string structured as "city_name, country, country_time_zone, latitude, longitude" |
+| enable_json_logging | `false` | Sets whether to write to json dump file |

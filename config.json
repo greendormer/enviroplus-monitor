@@ -40,5 +40,6 @@
     "time_zone": "America/Los_Angeles",
     "custom_locations": [
         "Portland, United States of America, America/Los_Angeles, 45.52, -122.681944"
-    ]
+    ],
+    "enable_json_logging": false
 }

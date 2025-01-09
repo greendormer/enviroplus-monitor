@@ -170,6 +170,7 @@ def retrieve_config():
     city_name = parsed_config_parameters['city_name']
     time_zone = parsed_config_parameters['time_zone']
     custom_locations = parsed_config_parameters['custom_locations']
+    enable_json_logging = parsed_config_parameters['enable_json_logging']
     return (temp_offset, altitude, enable_display, enable_adafruit_io, aio_user_name, aio_key, aio_feed_window,
             aio_feed_sequence, aio_household_prefix, aio_location_prefix, aio_package, enable_send_data_to_homemanager,
             enable_receive_data_from_homemanager, enable_indoor_outdoor_functionality,
@@ -178,7 +179,7 @@ def retrieve_config():
             enable_eco2_tvoc, gas_daily_r0_calibration_hour, reset_gas_sensor_calibration, incoming_temp_hum_mqtt_topic,
             incoming_temp_hum_mqtt_sensor_name, incoming_barometer_mqtt_topic, incoming_barometer_sensor_id,
             indoor_outdoor_function, mqtt_client_name, outdoor_mqtt_topic, indoor_mqtt_topic, city_name, time_zone,
-            custom_locations)
+            custom_locations, enable_json_logging)
 
 # Config Setup
 (temp_offset, altitude, enable_display, enable_adafruit_io, aio_user_name, aio_key, aio_feed_window, aio_feed_sequence,
@@ -188,7 +189,7 @@ def retrieve_config():
   enable_luftdaten_noise, disable_luftdaten_sensor_upload, enable_climate_and_gas_logging,  enable_particle_sensor, enable_eco2_tvoc,
   gas_daily_r0_calibration_hour, reset_gas_sensor_calibration, incoming_temp_hum_mqtt_topic, incoming_temp_hum_mqtt_sensor_name,
   incoming_barometer_mqtt_topic, incoming_barometer_sensor_id, indoor_outdoor_function, mqtt_client_name,
-  outdoor_mqtt_topic, indoor_mqtt_topic, city_name, time_zone, custom_locations) = retrieve_config()
+  outdoor_mqtt_topic, indoor_mqtt_topic, city_name, time_zone, custom_locations, enable_json_logging) = retrieve_config()
 
 # Add to city database
 db = database()
@@ -2539,8 +2540,9 @@ try:
                     persistent_data_log["Own Noise Max Date Time"] = own_noise_max_datetime
                     persistent_data_log["Outdoor Noise Max Date Time"] = outdoor_noise_max_datetime
                     print('Logging Barometer, Forecast, Gas Calibration and Display Data')
-                    with open('airquality.log', 'w') as f:
-                        f.write(json.dumps(persistent_data_log))
+                    if enable_json_logging:
+                        with open('airquality.log', 'w') as f:
+                            f.write(json.dumps(persistent_data_log))
                     if "Forecast" in mqtt_values:
                         mqtt_values.pop("Forecast") # Remove Forecast after sending it to home manager so that
                         # forecast data is only sent when updated
