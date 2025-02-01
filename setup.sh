@@ -23,7 +23,7 @@ After=network.target rc-local.service
 [Service]
 Restart=always
 WorkingDirectory=/var/lib/airquality/
-ExecStart=sudo ~/.virtualenvs/pimoroni/bin/python enviro.py
+ExecStart=sudo $(pwd)/.virtualenvs/pimoroni/bin/python enviro.py
 
 [Install]
 WantedBy=multi-user.target" | \
