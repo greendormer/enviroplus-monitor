@@ -34,12 +34,14 @@
     "incoming_barometer_sensor_id": 0,
     "indoor_outdoor_function": "Outdoor",
     "mqtt_client_name": "",
-    "outdoor_mqtt_topic": "aq/readings",
+    "outdoor_mqtt_topic": "aq/sensorname01/readings",
     "indoor_mqtt_topic": "",
     "city_name": "Portland",
     "time_zone": "America/Los_Angeles",
     "custom_locations": [
         "Portland, United States of America, America/Los_Angeles, 45.52, -122.681944"
     ],
-    "enable_json_logging": false
+    "enable_json_logging": false,
+    "long_update_delay": 300
+
 }

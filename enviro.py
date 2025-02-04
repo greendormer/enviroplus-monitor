@@ -171,6 +171,7 @@ def retrieve_config():
     time_zone = parsed_config_parameters['time_zone']
     custom_locations = parsed_config_parameters['custom_locations']
     enable_json_logging = parsed_config_parameters['enable_json_logging']
+    long_update_delay = parsed_config_parameters['long_update_delay']
     return (temp_offset, altitude, enable_display, enable_adafruit_io, aio_user_name, aio_key, aio_feed_window,
             aio_feed_sequence, aio_household_prefix, aio_location_prefix, aio_package, enable_send_data_to_homemanager,
             enable_receive_data_from_homemanager, enable_indoor_outdoor_functionality,
@@ -179,7 +180,7 @@ def retrieve_config():
             enable_eco2_tvoc, gas_daily_r0_calibration_hour, reset_gas_sensor_calibration, incoming_temp_hum_mqtt_topic,
             incoming_temp_hum_mqtt_sensor_name, incoming_barometer_mqtt_topic, incoming_barometer_sensor_id,
             indoor_outdoor_function, mqtt_client_name, outdoor_mqtt_topic, indoor_mqtt_topic, city_name, time_zone,
-            custom_locations, enable_json_logging)
+            custom_locations, enable_json_logging, long_update_delay)
 
 # Config Setup
 (temp_offset, altitude, enable_display, enable_adafruit_io, aio_user_name, aio_key, aio_feed_window, aio_feed_sequence,
@@ -189,7 +190,7 @@ def retrieve_config():
   enable_luftdaten_noise, disable_luftdaten_sensor_upload, enable_climate_and_gas_logging,  enable_particle_sensor, enable_eco2_tvoc,
   gas_daily_r0_calibration_hour, reset_gas_sensor_calibration, incoming_temp_hum_mqtt_topic, incoming_temp_hum_mqtt_sensor_name,
   incoming_barometer_mqtt_topic, incoming_barometer_sensor_id, indoor_outdoor_function, mqtt_client_name,
-  outdoor_mqtt_topic, indoor_mqtt_topic, city_name, time_zone, custom_locations, enable_json_logging) = retrieve_config()
+  outdoor_mqtt_topic, indoor_mqtt_topic, city_name, time_zone, custom_locations, enable_json_logging, long_update_delay) = retrieve_config()
 
 # Add to city database
 db = database()
@@ -206,22 +207,22 @@ if enable_noise:
     from numpy import pi, log10
     from scipy.signal import zpk2tf, zpk2sos, freqs, sosfilt
     from waveform_analysis.weighting_filters._filter_design import _zpkbilinear
-               
+
 def read_pm_values(luft_values, mqtt_values, own_data, own_disp_values):
     if enable_particle_sensor:
         try:
             pm_values = pms5003.read()
             #print('PM Values:', pm_values)
             own_data["P2.5"][1] = pm_values.pm_ug_per_m3(2.5)
-            mqtt_values["P2.5"] = own_data["P2.5"][1]
+            mqtt_values["p025"] = own_data["P2.5"][1]
             own_disp_values["P2.5"] = own_disp_values["P2.5"][1:] + [[own_data["P2.5"][1], 1]]
-            luft_values["P2"] = str(mqtt_values["P2.5"])
+            luft_values["P2"] = str(mqtt_values["p025"])
             own_data["P10"][1] = pm_values.pm_ug_per_m3(10)
-            mqtt_values["P10"] = own_data["P10"][1]
+            mqtt_values["p10"] = own_data["P10"][1]
             own_disp_values["P10"] = own_disp_values["P10"][1:] + [[own_data["P10"][1], 1]]
             luft_values["P1"] = str(own_data["P10"][1])
             own_data["P1"][1] = pm_values.pm_ug_per_m3(1.0)
-            mqtt_values["P1"] = own_data["P1"][1]
+            mqtt_values["p01"] = own_data["P1"][1]
             own_disp_values["P1"] = own_disp_values["P1"][1:] + [[own_data["P1"][1], 1]]
         except (ReadTimeoutError, ChecksumMismatchError):
             logging.info("Failed to read PMS5003")
@@ -229,15 +230,15 @@ def read_pm_values(luft_values, mqtt_values, own_data, own_disp_values):
             pms5003.reset()
             pm_values = pms5003.read()
             own_data["P2.5"][1] = pm_values.pm_ug_per_m3(2.5)
-            mqtt_values["P2.5"] = own_data["P2.5"][1]
+            mqtt_values["p025"] = own_data["P2.5"][1]
             own_disp_values["P2.5"] = own_disp_values["P2.5"][1:] + [[own_data["P2.5"][1], 1]]
-            luft_values["P2"] = str(mqtt_values["P2.5"])
+            luft_values["P2"] = str(mqtt_values["p025"])
             own_data["P10"][1] = pm_values.pm_ug_per_m3(10)
-            mqtt_values["P10"] = own_data["P10"][1]
+            mqtt_values["p10"] = own_data["P10"][1]
             own_disp_values["P10"] = own_disp_values["P10"][1:] + [[own_data["P10"][1], 1]]
             luft_values["P1"] = str(own_data["P10"][1])
             own_data["P1"][1] = pm_values.pm_ug_per_m3(1.0)
-            mqtt_values["P1"] = own_data["P1"][1]
+            mqtt_values["p01"] = own_data["P1"][1]
             own_disp_values["P1"] = own_disp_values["P1"][1:] + [[own_data["P1"][1], 1]]
     return(luft_values, mqtt_values, own_data, own_disp_values)
 
@@ -276,12 +277,12 @@ def read_climate_gas_values(luft_values, mqtt_values, own_data, maxi_temp, mini_
         own_data["Hum"][1] = float(luft_values["humidity"])
     own_data["Dew"][1] = round(calculate_dewpoint(own_data["Temp"][1], own_data["Hum"][1]),1)
     own_disp_values["Dew"] = own_disp_values["Dew"][1:] + [[own_data["Dew"][1], 1]]
-    mqtt_values["Dew"]  = own_data["Dew"][1]
+    mqtt_values["dew"]  = own_data["Dew"][1]
     own_disp_values["Temp"] = own_disp_values["Temp"][1:] + [[own_data["Temp"][1], 1]]
-    mqtt_values["Temp"] = own_data["Temp"][1]
+    mqtt_values["temp"] = own_data["Temp"][1]
     own_disp_values["Hum"] = own_disp_values["Hum"][1:] + [[own_data["Hum"][1], 1]]
-    mqtt_values["Hum"][0] = own_data["Hum"][1]
-    mqtt_values["Hum"][1] = domoticz_hum_map[describe_humidity(own_data["Hum"][1])]
+    mqtt_values["hum"][0] = own_data["Hum"][1]
+    mqtt_values["hum"][1] = domoticz_hum_map[describe_humidity(own_data["Hum"][1])]
     if enable_eco2_tvoc: # Calculate and send the absolute humidity reading to the SGP30 for humidity compensation
         absolute_hum = int(1000 * 216.7 * (raw_hum/100 * 6.112 * math.exp(17.62 * raw_temp / (243.12 + raw_temp)))
                            /(273.15 + raw_temp))
@@ -302,14 +303,14 @@ def read_climate_gas_values(luft_values, mqtt_values, own_data, maxi_temp, mini_
             mini_temp = own_data["Temp"][1]
         else:
             pass
-    mqtt_values["Min Temp"] = mini_temp
-    mqtt_values["Max Temp"] = maxi_temp
+    mqtt_values["temp_min"] = mini_temp
+    mqtt_values["temp_max"] = maxi_temp
     raw_barometer = bme280.get_pressure()
     if use_external_barometer == False:
         print("Internal Barometer")
         own_data["Bar"][1] = round(raw_barometer * barometer_altitude_comp_factor(altitude, own_data["Temp"][1]), 2)
         own_disp_values["Bar"] = own_disp_values["Bar"][1:] + [[own_data["Bar"][1], 1]]
-        mqtt_values["Bar"][0] = own_data["Bar"][1]
+        mqtt_values["bar"][0] = own_data["Bar"][1]
         luft_values["pressure"] = "{:.2f}".format(raw_barometer * 100) # Send raw air pressure to Lufdaten,
         # since it does its own altitude air pressure compensation
         print("Raw Bar:", round(raw_barometer, 2), "Comp Bar:", own_data["Bar"][1])
@@ -317,7 +318,7 @@ def read_climate_gas_values(luft_values, mqtt_values, own_data, maxi_temp, mini_
         print("External Barometer")
         own_data["Bar"][1] = round(float(es.barometer), 2)
         own_disp_values["Bar"] = own_disp_values["Bar"][1:] + [[own_data["Bar"][1], 1]]
-        mqtt_values["Bar"][0] = own_data["Bar"][1]
+        mqtt_values["bar"][0] = own_data["Bar"][1]
         # Remove altitude compensation from external barometer because Lufdaten does its own altitude air pressure
         # compensation
         luft_values["pressure"] = "{:.2f}".format(float(es.barometer) / barometer_altitude_comp_factor (
@@ -327,21 +328,32 @@ def read_climate_gas_values(luft_values, mqtt_values, own_data, maxi_temp, mini_
         read_gas_in_ppm(gas_calib_temp, gas_calib_hum, gas_calib_bar, raw_temp, raw_hum, raw_barometer, gas_sensors_warm)
     own_data["Red"][1] = round(red_in_ppm, 2)
     own_disp_values["Red"] = own_disp_values["Red"][1:] + [[own_data["Red"][1], 1]]
-    mqtt_values["Red"] = own_data["Red"][1]
+    mqtt_values["gas_red"] = own_data["Red"][1]
     own_data["Oxi"][1] = round(oxi_in_ppm, 2)
     own_disp_values["Oxi"] = own_disp_values["Oxi"][1:] + [[own_data["Oxi"][1], 1]]
-    mqtt_values["Oxi"] = own_data["Oxi"][1]
+    mqtt_values["gas_oxi"] = own_data["Oxi"][1]
     own_data["NH3"][1] = round(nh3_in_ppm, 2)
     own_disp_values["NH3"] = own_disp_values["NH3"][1:] + [[own_data["NH3"][1], 1]]
-    mqtt_values["NH3"] = own_data["NH3"][1]
-    mqtt_values["Gas Calibrated"] = gas_sensors_warm
+    mqtt_values["gas_nh3"] = own_data["NH3"][1]
+    mqtt_values["gas_calibrated"] = gas_sensors_warm
     proximity = ltr559.get_proximity()
+    lux_raw = ltr559.get_lux()
     if proximity < 500:
-        own_data["Lux"][1] = round(ltr559.get_lux(), 1)
+        own_data["Lux"][1] = round(lux_raw, 1)
     else:
         own_data["Lux"][1] = 1
     own_disp_values["Lux"] = own_disp_values["Lux"][1:] + [[own_data["Lux"][1], 1]]
-    mqtt_values["Lux"] = own_data["Lux"][1]
+    mqtt_values["lux"] = own_data["Lux"][1]
+    #add raw values to mqtt payload
+    mqtt_values["proximity"] = proximity
+    mqtt_values["lux_raw"] = lux_raw
+    mqtt_values["temp_raw"] = raw_temp
+    mqtt_values["bar_raw"] = raw_barometer
+    mqtt_values["hum_raw"] = raw_hum
+    mqtt_values["gas_red_raw"] = raw_red_rs
+    mqtt_values["gas_oxi_raw"] = raw_oxi_rs
+    mqtt_values["gas_nh3_raw"] = raw_nh3_rs
+    mqtt_values["current_time"] = current_time
     return luft_values, mqtt_values, own_data, maxi_temp, mini_temp, own_disp_values, raw_red_rs, raw_oxi_rs,\
            raw_nh3_rs, raw_temp, comp_temp, comp_hum, raw_hum, use_external_temp_hum, use_external_barometer,\
            raw_barometer, absolute_hum
@@ -470,7 +482,7 @@ def log_climate_and_gas(run_time, own_data, raw_red_rs, raw_oxi_rs, raw_nh3_rs, 
                                 'Red': own_data["Red"][1], 'NH3': own_data["NH3"][1], 'Raw OxiRS': raw_oxi_rs,
                                 'Raw RedRS': raw_red_rs, 'Raw NH3RS': raw_nh3_rs}
     print('Logging Environment Data.', environment_log_data)
-    with open('<Your Environment Log File Location Here>', 'a') as f:
+    with open('airquality_capture.log', 'a') as f:
         f.write(',\n' + json.dumps(environment_log_data))
     
 # Calculate Air Quality Level
@@ -1506,7 +1518,7 @@ def update_aio(mqtt_values, forecast, aio_format, aio_forecast_text_format,
                 aio_resp = True       
         else: # Send the value if sending data other than noise, humidity or barometer
             # Only send gas data if the gas sensors are warm and calibrated
-            if (feed != "Red" and feed != "Oxi" and feed != "NH3") or mqtt_values['Gas Calibrated']:
+            if (feed != "Red" and feed != "Oxi" and feed != "NH3") or mqtt_values["gas_calibrated"]:
                 #print('Sending', feed, 'Feed')
                 feed_resp = send_data_to_aio(aio_format[feed][0], mqtt_values[feed])
                 if feed_resp:
@@ -2026,7 +2038,7 @@ gas_calib_hum = round(first_humidity_reading, 1)
 gas_calib_bar = round(first_pressure_reading, 1)
 gas_sensors_warm = False
 outdoor_gas_sensors_warm = False # Only used for an indoor unit when indoor/outdoor functionality is enabled
-mqtt_values["Gas Calibrated"] = False # Only set to true after the gas sensor warmup time has been completed
+mqtt_values["gas_calibrated"] = False # Only set to true after the gas sensor warmup time has been completed
 gas_sensors_warmup_time = 6000
 gas_daily_r0_calibration_completed = False
 
@@ -2049,15 +2061,20 @@ short_update_time = 0 # Set the short update time baseline (for watchdog alive f
 short_update_delay = 150 # Time between short updates
 previous_aio_update_minute = None # Used to record the last minute that the aio feeds were updated
 long_update_time = 0 # Set the long update time baseline (for all other updates)
-long_update_delay = 300 # Time between long updates
+# Get long_update_delay from config otherwise set it to 300 seconds
+#  long_update sends mqtt_values
+try:
+    long_update_delay = float(long_update_delay)
+except ValueError:
+    long_update_delay = 300 # Time between long updates
 long_update_toggle = False # Allows external outdoor Luftdaten or Adafruit updates to be undertaken every second long-update cycle
 startup_stabilisation_time = 300 # Time to allow sensor stabilisation before sending external updates
 start_time = time.time()
 barometer_available_time = start_time + 10945 # Initialise the time until a forecast is available (3 hours + the time
 # taken before the first climate reading)
-mqtt_values["Bar"] = [gas_calib_bar, domoticz_forecast]
+mqtt_values["bar"] = [gas_calib_bar, domoticz_forecast]
 domoticz_hum_map = {"good": "1", "dry": "2", "wet": "3"}
-mqtt_values["Hum"] = [gas_calib_hum, domoticz_hum_map["good"]]
+mqtt_values["hum"] = [gas_calib_hum, domoticz_hum_map["good"]]
 path = os.path.dirname(os.path.realpath(__file__))
 
 # Set up outdoor aio readings dictionary and requests session
@@ -2334,7 +2351,7 @@ try:
                                                                                                 barometer_history)
                 mqtt_values["Forecast"] = {"Valid": valid_barometer_history, "3 Hour Change": round(barometer_change, 1),
                                            "Forecast": forecast.replace("\n", " ")}
-                mqtt_values["Bar"][1] = domoticz_forecast # Add Domoticz Weather Forecast
+                mqtt_values["bar"][1] = domoticz_forecast # Add Domoticz Weather Forecast
                 print('Barometer Logged. Waiting for next capture cycle')
 
             # Process paired outdoor unit, if enabled
