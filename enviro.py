@@ -214,15 +214,15 @@ def read_pm_values(luft_values, mqtt_values, own_data, own_disp_values):
             pm_values = pms5003.read()
             #print('PM Values:', pm_values)
             own_data["P2.5"][1] = pm_values.pm_ug_per_m3(2.5)
-            mqtt_values["p025"] = own_data["P2.5"][1]
+            mqtt_values["pm025"] = own_data["P2.5"][1]
             own_disp_values["P2.5"] = own_disp_values["P2.5"][1:] + [[own_data["P2.5"][1], 1]]
-            luft_values["P2"] = str(mqtt_values["p025"])
+            luft_values["P2"] = str(mqtt_values["pm025"])
             own_data["P10"][1] = pm_values.pm_ug_per_m3(10)
-            mqtt_values["p10"] = own_data["P10"][1]
+            mqtt_values["pm10"] = own_data["P10"][1]
             own_disp_values["P10"] = own_disp_values["P10"][1:] + [[own_data["P10"][1], 1]]
             luft_values["P1"] = str(own_data["P10"][1])
             own_data["P1"][1] = pm_values.pm_ug_per_m3(1.0)
-            mqtt_values["p01"] = own_data["P1"][1]
+            mqtt_values["pm01"] = own_data["P1"][1]
             own_disp_values["P1"] = own_disp_values["P1"][1:] + [[own_data["P1"][1], 1]]
         except (ReadTimeoutError, ChecksumMismatchError):
             logging.info("Failed to read PMS5003")
@@ -230,15 +230,15 @@ def read_pm_values(luft_values, mqtt_values, own_data, own_disp_values):
             pms5003.reset()
             pm_values = pms5003.read()
             own_data["P2.5"][1] = pm_values.pm_ug_per_m3(2.5)
-            mqtt_values["p025"] = own_data["P2.5"][1]
+            mqtt_values["pm025"] = own_data["P2.5"][1]
             own_disp_values["P2.5"] = own_disp_values["P2.5"][1:] + [[own_data["P2.5"][1], 1]]
-            luft_values["P2"] = str(mqtt_values["p025"])
+            luft_values["P2"] = str(mqtt_values["pm025"])
             own_data["P10"][1] = pm_values.pm_ug_per_m3(10)
-            mqtt_values["p10"] = own_data["P10"][1]
+            mqtt_values["pm10"] = own_data["P10"][1]
             own_disp_values["P10"] = own_disp_values["P10"][1:] + [[own_data["P10"][1], 1]]
             luft_values["P1"] = str(own_data["P10"][1])
             own_data["P1"][1] = pm_values.pm_ug_per_m3(1.0)
-            mqtt_values["p01"] = own_data["P1"][1]
+            mqtt_values["pm01"] = own_data["P1"][1]
             own_disp_values["P1"] = own_disp_values["P1"][1:] + [[own_data["P1"][1], 1]]
     return(luft_values, mqtt_values, own_data, own_disp_values)
 
