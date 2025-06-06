@@ -12,6 +12,8 @@ cd ~/code/enviroplus-python
 sudo mkdir -p /var/lib/airquality/
 sudo cp -rp ~/code/enviroplus-monitor/* /var/lib/airquality/ 
 
+sudo $HOME/.virtualenvs/pimoroni/bin/python -m pip install -r requirements.txt
+
 echo \
   "# /etc/systemd/system/airquality_server.service
 # to run: sudo systemctl stop/start/restart/enable/disable airquality_server
