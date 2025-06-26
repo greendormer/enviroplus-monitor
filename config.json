@@ -17,7 +17,7 @@
     "outdoor_source_type": "Enviro",
     "outdoor_source_id": {},
     "enable_noise": false,
-    "mqtt_broker_name": "node-red-tm",
+    "mqtt_broker_name": "localhost",
     "mqtt_username": "",
     "mqtt_password": "",
     "enable_luftdaten": false,
