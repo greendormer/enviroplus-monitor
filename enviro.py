@@ -22,12 +22,37 @@ try:
 except ImportError:
     from smbus import SMBus
 
+# ----------------------------------------------------------------------
+# Nested‑try import that falls back to a NaN‑returning dummy
+# ----------------------------------------------------------------------
 try:
-    # Transitional fix for breaking change in LTR559
-    from ltr559 import LTR559
-    ltr559 = LTR559()
-except ImportError:
-    import ltr559
+    try:
+        # Transitional fix for breaking change in LTR559
+        from ltr559 import LTR559
+        ltr559 = LTR559()
+    except ImportError:
+        import ltr559
+        ltr559 = ltr559
+except TimeoutError as e:
+    print(f"Warning: {e}. Continuing processing without LTR559.")
+    ltr559 = None
+except Exception:
+    ltr559 = None
+# ----------------------------------------------------------------------
+# If the import failed, replace the object with a proxy that returns NaN
+# no need to change downstream code and can replace with any value
+# ----------------------------------------------------------------------
+if ltr559 is None or not hasattr(ltr559, "get_proximity"):
+    class _NaNProxy:
+        """Return math.nan for any attribute access or call."""
+        def __getattr__(self, name):
+            return lambda *args, **kwargs: math.nan
+
+        def __call__(self, *args, **kwargs):
+            return math.nan
+
+    ltr559 = _NaNProxy()
+
 from enviroplus import gas
 from bme280 import BME280
 from pms5003 import PMS5003, ReadTimeoutError, ChecksumMismatchError
@@ -2018,8 +2043,8 @@ first_humidity_reading = bme280.get_humidity()
 first_pressure_reading = bme280.get_pressure() * barometer_altitude_comp_factor(altitude, first_temperature_reading)
 use_external_temp_hum = False
 use_external_barometer = False
-first_light_reading = ltr559.get_lux()
 first_proximity_reading = ltr559.get_proximity()
+first_light_reading = ltr559.get_lux()
 raw_red_rs, raw_oxi_rs, raw_nh3_rs = read_raw_gas()
 
 # Set up startup gas sensors' R0 with no compensation (Compensation will be set up after warm up time)
