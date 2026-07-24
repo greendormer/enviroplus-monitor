@@ -36,3 +36,12 @@ sudo systemctl daemon-reload
 
 sudo systemctl start airquality_server
 sudo systemctl enable airquality_server
+
+printf "Reboot is required to complete the installation.\n"
+if _confirm_cont "Would you like to reboot now? [y|N] " ;then
+  printf "Rebooting system now.\n"
+  sudo shutdown -r +1 "System is rebooting to finalize airquality_server setup"
+  printf "\n"
+else
+  printf "Reboot skipped. You will need to manually reboot this device to finalize airquality_server setup.\nExitting...\n"
+fi
