@@ -1,5 +1,5 @@
 {
-    "version": "Base-6.10a",
+    "version": "Base-8.1",
     "temp_offset": 0,
     "altitude": 49,
     "enable_display": false,
@@ -41,6 +41,7 @@
     "custom_locations": [
         "Portland, United States of America, America/Los_Angeles, 45.52, -122.681944"
     ],
+    "serial_port": "/dev/ttyS0",
     "enable_json_logging": false,
     "long_update_delay": 300
 

@@ -24,7 +24,7 @@ See [config_readme.md](config_readme.md) for table with full description and TM 
 - `"indoor_outdoor_function": "Outdoor"` to utilize `outdoor_mqtt_topic`
 - `"enable_display": false` since the AQ sensor will be in an enclosure
 - `"outdoor_mqtt_topic": "aq/readings"` for message topic
-
+- `"serial_port": "/dev/ttyS0"`: Allows the serial port of the particle sensor to be specified. Typically set to "/dev/ttyAMA0" for older model Raspberry Pis or "/dev/ttyS0" for newer models. It can be completely omitted (including the "serial_port" key) and the particle sensor library will use its default serial port setting ("/dev/ttyAMA0").
 ## Configure deployment-specific settings
 These need to be configured per-deployment for your location.  They are utilized by the [Astral package]([url](https://astral.readthedocs.io/en/stable/index.html)) for calculating the times of various aspects of the sun and phases of the moon.
 
@@ -36,3 +36,4 @@ These need to be configured per-deployment for your location.  They are utilized
         "Portland, United States of America, America/Los_Angeles, 45.52, -122.681944"
     ]
 ```
+
