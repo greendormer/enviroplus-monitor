@@ -192,7 +192,7 @@ def retrieve_config():
   enable_luftdaten_noise, disable_luftdaten_sensor_upload, enable_climate_and_gas_logging,  enable_particle_sensor, enable_eco2_tvoc,
   gas_daily_r0_calibration_hour, reset_gas_sensor_calibration, incoming_temp_hum_mqtt_topic, incoming_temp_hum_mqtt_sensor_name,
   incoming_barometer_mqtt_topic, incoming_barometer_sensor_id, indoor_outdoor_function, mqtt_client_name,
-  outdoor_mqtt_topic, indoor_mqtt_topic, city_name, time_zone, custom_locations, enable_json_logging, long_update_delay) = retrieve_config()
+  outdoor_mqtt_topic, indoor_mqtt_topic, city_name, time_zone, custom_locations, serial_port, enable_json_logging, long_update_delay) = retrieve_config()
 
 # Add to city database
 db = database()
@@ -2032,7 +2032,6 @@ path = os.path.dirname(os.path.realpath(__file__))
 # Set up outdoor aio readings dictionary and requests session
 outdoor_aio_readings = {"Temp": "-temperature", "Hum": "-humidity", "Dew": "-dewpoint", "P1": "-pm1", "P10": "-pm10", "P2.5": "-pm2-dot-5",
                         "Oxi": "-oxidising", "Red": "-reducing", "NH3": "-ammonia"}
-external_outdoor_data_session = requests.Session()
 
 if enable_eco2_tvoc: # Set up SGP30 if it's enabled
     eco2_tvoc_baseline = [] # Initialise tvoc_co2_baseline format: get - [eco2 value, tvoc value, time set] set

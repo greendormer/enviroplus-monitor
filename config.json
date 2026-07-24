@@ -41,7 +41,7 @@
     "custom_locations": [
         "Portland, United States of America, America/Los_Angeles, 45.52, -122.681944"
     ],
-    "serial_port": "/dev/ttyS0",
+    "serial_port": "/dev/ttyAMA0",
     "enable_json_logging": false,
     "long_update_delay": 300
 
