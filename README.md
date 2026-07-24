@@ -3,13 +3,12 @@
 
 Based on the amazing work at [roscoe81/enviro-monitor](https://github.com/roscoe81/enviro-monitor) (cloned from 
 [73a8e02](https://github.com/roscoe81/enviro-monitor/commit/73a8e02923434d8c7555ff91899c8f04f73aaf47), version `8.2 Gen`) and the manufactuer's repo at [pimoroni/enviroplus-python](https://github.com/pimoroni/enviroplus-python).
+- Updated 2026-07-23 for Commit [3d42c22](https://github.com/roscoe81/enviro-monitor/commit/3d42c225f027f223785a4d86a9cffdd640ac3722)
 
 # Installation
-1. Run `cd ~/code` 
-1. Run `git clone https://github.com/greendormer/enviroplus-monitor.git`
-1. Run `cd enviroplus-monitor` 
-1. Run `sudo chmod +x setup.sh` to enable script
-1. Run `./setup.sh` to install service
+1. Run `sudo apt update && sudo apt install -y git`
+1. Run `git clone https://github.com/greendormer/enviroplus-monitor enviroplus-monitor` 
+1. Run `bash enviroplus-monitor/setup.sh`
 
 You will need Traffic Monitor v0.3.0 or greater to feed data into your TM.
 
@@ -36,4 +35,3 @@ These need to be configured per-deployment for your location.  They are utilized
         "Portland, United States of America, America/Los_Angeles, 45.52, -122.681944"
     ]
 ```
-
